@@ -6,6 +6,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.view.MenuItem;
 
 import com.practice.googleplay.R;
 import com.practice.googleplay.ui.fragment.BaseFragment;
@@ -25,6 +29,7 @@ public class MainActivity extends BaseActivity {
     private PagerTab mPagerTab;
     private ViewPager mViewPager;
     private MyAdapter mAdapter;
+    private ActionBarDrawerToggle toggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +63,28 @@ public class MainActivity extends BaseActivity {
             public void onPageScrollStateChanged(int state) {
             }
         });
+        initActionbar();
+    }
+//初始化initActionbar
+    private void initActionbar() {
+        ActionBar actionbar = getSupportActionBar();
+        actionbar.setHomeButtonEnabled(true);
+        actionbar.setDisplayHomeAsUpEnabled(true);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer);
+        toggle = new  ActionBarDrawerToggle(this, drawer, R.string.drawer_open, R.string.drawer_close);
+        toggle.syncState();// 同步状态, 将DrawerLayout和开关关联在一起
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                toggle.onOptionsItemSelected(item);
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**

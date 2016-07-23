@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 /**
  * 专题
- *
+ *@author 赖上罗小贱
  */
 public class SubjectFragment extends BaseFragment {
 
@@ -42,7 +42,7 @@ public class SubjectFragment extends BaseFragment {
 		}
 
 		@Override
-		public BaseHolder<SubjectInfo> getHolder() {
+		public BaseHolder<SubjectInfo> getHolder(int position) {
 			return new SubjectHolder();
 		}
 

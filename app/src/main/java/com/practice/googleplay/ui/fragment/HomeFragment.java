@@ -1,15 +1,20 @@
 package com.practice.googleplay.ui.fragment;
 
+import android.content.Intent;
 import android.view.View;
-import android.widget.ListView;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView;
 
+import com.practice.googleplay.ui.view.LoadingPage.ResultState;
 import com.practice.googleplay.domain.AppInfo;
 import com.practice.googleplay.http.protocol.HomeProtocol;
+import com.practice.googleplay.ui.activity.HomeDetailActivity;
 import com.practice.googleplay.ui.adapter.MyBaseAdapter;
 import com.practice.googleplay.ui.holder.BaseHolder;
+import com.practice.googleplay.ui.holder.HomeHeaderHolder;
 import com.practice.googleplay.ui.holder.HomeHolder;
-import com.practice.googleplay.ui.view.LoadingPage.ResultState;
+import com.practice.googleplay.ui.view.MyListView;
 import com.practice.googleplay.utils.UIUtils;
 
 import java.util.ArrayList;
@@ -17,20 +22,49 @@ import java.util.ArrayList;
 /**
  * 首页
  *
- * Created by 赖上罗小贱 on 2016/7/12.
  */
 public class HomeFragment extends BaseFragment {
 
 	// private ArrayList<String> data;
 	private ArrayList<AppInfo> data;
 
+	// 轮播条数据
+	private ArrayList<String> mPictureList;
+
 	// 如果加载数据成功, 就回调此方法, 在主线程运行
 	@Override
 	public View onCreateSuccessView() {
 		// TextView view = new TextView(UIUtils.getContext());
 		// view.setText(getClass().getSimpleName());
-		ListView view = new ListView(UIUtils.getContext());
+		MyListView view = new MyListView(UIUtils.getContext());
+
+		// 给listview增加头布局展示轮播条
+		HomeHeaderHolder header = new HomeHeaderHolder();
+		view.addHeaderView(header.getRootView());// 先添加头布局,再setAdapter
+
 		view.setAdapter(new HomeAdapter(data));
+
+		if (mPictureList != null) {
+			// 设置轮播条数据
+			header.setData(mPictureList);
+		}
+
+		view.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				AppInfo appInfo = data.get(position - 1);// 去掉头布局
+
+				if (appInfo != null) {
+					Intent intent = new Intent(UIUtils.getContext(),
+							HomeDetailActivity.class);
+					intent.putExtra("packageName", appInfo.packageName);
+					startActivity(intent);
+				}
+			}
+		});
+
 		return view;
 	}
 
@@ -45,6 +79,8 @@ public class HomeFragment extends BaseFragment {
 		HomeProtocol protocol = new HomeProtocol();
 		data = protocol.getData(0);// 加载第一页数据
 
+		mPictureList = protocol.getPictureList();
+
 		return check(data);// 校验数据并返回
 	}
 
@@ -55,7 +91,7 @@ public class HomeFragment extends BaseFragment {
 		}
 
 		@Override
-		public BaseHolder<AppInfo> getHolder() {
+		public BaseHolder<AppInfo> getHolder(int position) {
 			return new HomeHolder();
 		}
 

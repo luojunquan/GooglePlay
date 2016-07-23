@@ -11,9 +11,10 @@ import java.util.ArrayList;
 /**
  * 首页网络数据解析
  *
- *Created by 赖上罗小贱 on 2016/7/13.
  */
 public class HomeProtocol extends BaseProtocol<ArrayList<AppInfo>> {
+
+	private ArrayList<String> pictures;
 
 	@Override
 	public String getKey() {
@@ -53,7 +54,7 @@ public class HomeProtocol extends BaseProtocol<ArrayList<AppInfo>> {
 
 			// 初始化轮播条的数据
 			JSONArray ja1 = jo.getJSONArray("picture");
-			ArrayList<String> pictures = new ArrayList<String>();
+			pictures = new ArrayList<String>();
 			for (int i = 0; i < ja1.length(); i++) {
 				String pic = ja1.getString(i);
 				pictures.add(pic);
@@ -66,6 +67,10 @@ public class HomeProtocol extends BaseProtocol<ArrayList<AppInfo>> {
 		}
 
 		return null;
+	}
+
+	public ArrayList<String> getPictureList() {
+		return pictures;
 	}
 
 }
